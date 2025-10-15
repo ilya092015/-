@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <style>
+        body {
+            background: #b1b1b1;
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            padding: 30px;
+        }
+        canvas {
+            background: #fff;
+            border: 1px solid #000;
+        }
+    </style>
+</head>
+<body>
+<canvas id="canvas1" width="250" height="250"></canvas>
+<canvas id="canvas2" width="250" height="250"></canvas>
+<script>
+    let colors = ["red","blue","green","orange","purple","brown","pink","cyan","lime","black"];
+    let ctx1 = document.getElementById("canvas1").getContext("2d");
+    for (let r = 120, i = 0; r >= 10; r -= 10, i++) {
+        ctx1.beginPath();
+        ctx1.arc(125, 125, r, 0, 2 * Math.PI);
+        ctx1.fillStyle = colors[i % colors.length];
+        ctx1.fill();
+        ctx1.strokeStyle = "black";
+        ctx1.lineWidth = 1;
+        ctx1.stroke();
+    }
+
+    let ctx2 = document.getElementById("canvas2").getContext("2d");
+    let cx = 125, cy = 125, R = 100;
+    for (let angle = 0; angle < 2 * Math.PI; angle += Math.PI / 12) {
+        ctx2.beginPath();
+        ctx2.moveTo(cx, cy);
+        let endX = cx + R * Math.cos(angle);
+        let endY = cy + R * Math.sin(angle);
+        ctx2.lineTo(endX, endY);
+        ctx2.strokeStyle = "red";
+        ctx2.lineWidth = 2;
+        ctx2.stroke();
+        
+        ctx2.beginPath();
+        ctx2.arc(endX, endY, 5, 0, 2 * Math.PI);
+        ctx2.fillStyle = "blue";
+        ctx2.fill();
+    }
+</script>
+</body>
+</html>
