@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Квадратики</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+        .task {
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 15px;
+            background-color: #f9f9f9;
+        }
+        canvas {
+            border: 1px solid #000;
+            background-color: white;
+            margin-top: 10px;
+        }
+        .controls {
+            margin: 10px 0;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-items: center;
+        }
+        button {
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+        input, select {
+            padding: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Квадратики</h1>
+        
+        <div class="task">
+            <h2>Задание 2: Настраиваемый прямоугольник</h2>
+            <div class="controls">
+                <label>X: <input type="number" id="rectX" value="50" min="0" max="400"></label>
+                <label>Y: <input type="number" id="rectY" value="50" min="0" max="300"></label>
+                <label>Ширина: <input type="number" id="rectWidth" value="100" min="1" max="400"></label>
+                <label>Высота: <input type="number" id="rectHeight" value="80" min="1" max="300"></label>
+                <label>Цвет: <input type="color" id="rectColor" value="#ff0000"></label>
+                <button id="drawRectBtn">Нарисовать прямоугольник</button>
+            </div>
+            <canvas id="rectCanvas" width="500" height="350"></canvas>
+        </div>
+        
+        <div class="task">
+            <h2>Задание 4: Анимированные прямоугольники</h2>
+            <div class="controls">
+                <label>Скорость (мс): <input type="number" id="speed" value="500" min="100" max="2000"></label>
+                <label><input type="checkbox" id="useRed" checked> Красный</label>
+                <label><input type="checkbox" id="useGreen" checked> Зеленый</label>
+                <label><input type="checkbox" id="useBlue" checked> Синий</label>
+                <button id="startBtn">Старт</button>
+                <button id="stopBtn">Стоп</button>
+                <button id="clearBtn">Очистить</button>
+            </div>
+            <canvas id="animCanvas" width="500" height="350"></canvas>
+        </div>
+    </div>
+
+    <script>
+        const rectCanvas = document.getElementById('rectCanvas');
+        const rectCtx = rectCanvas.getContext('2d');
+        const drawRectBtn = document.getElementById('drawRectBtn');
+        
+        drawRectBtn.addEventListener('click', function() {
+            rectCtx.clearRect(0, 0, rectCanvas.width, rectCanvas.height);
+            
+            const x = parseInt(document.getElementById('rectX').value);
+            const y = parseInt(document.getElementById('rectY').value);
+            const width = parseInt(document.getElementById('rectWidth').value);
+            const height = parseInt(document.getElementById('rectHeight').value);
+            const color = document.getElementById('rectColor').value;
+            
+            rectCtx.fillStyle = color;
+            rectCtx.fillRect(x, y, width, height);
+            
+            rectCtx.strokeStyle = '#000';
+            rectCtx.lineWidth = 2;
+            rectCtx.strokeRect(x, y, width, height);
+        });
+        
+        drawRectBtn.click();
+        
+        const animCanvas = document.getElementById('animCanvas');
+        const animCtx = animCanvas.getContext('2d');
+        const startBtn = document.getElementById('startBtn');
+        const stopBtn = document.getElementById('stopBtn');
+        const clearBtn = document.getElementById('clearBtn');
+        
+        let animationInterval;
+        
+        function getRandomColor() {
+            const useRed = document.getElementById('useRed').checked;
+            const useGreen = document.getElementById('useGreen').checked;
+            const useBlue = document.getElementById('useBlue').checked;
+            
+            let r = 0, g = 0, b = 0;
+            
+            if (useRed) r = Math.floor(Math.random() * 256);
+            if (useGreen) g = Math.floor(Math.random() * 256);
+            if (useBlue) b = Math.floor(Math.random() * 256);
+            
+            if (!useRed && !useGreen && !useBlue) {
+                const gray = Math.floor(Math.random() * 256);
+                r = g = b = gray;
+            }
+            
+            return `rgb(${r}, ${g}, ${b})`;
+        }
+        
+        function drawRandomRect() {
+            const x = Math.floor(Math.random() * (animCanvas.width - 50));
+            const y = Math.floor(Math.random() * (animCanvas.height - 50));
+            const width = Math.floor(Math.random() * 100) + 20;
+            const height = Math.floor(Math.random() * 100) + 20;
+            const color = getRandomColor();
+            
+            animCtx.fillStyle = color;
+            animCtx.fillRect(x, y, width, height);
+            
+            animCtx.strokeStyle = '#000';
+            animCtx.lineWidth = 1;
+            animCtx.strokeRect(x, y, width, height);
+        }
+        
+        startBtn.addEventListener('click', function() {
+            if (animationInterval) clearInterval(animationInterval);
+            
+            const speed = parseInt(document.getElementById('speed').value);
+            animationInterval = setInterval(drawRandomRect, speed);
+        });
+        
+        stopBtn.addEventListener('click', function() {
+            if (animationInterval) {
+                clearInterval(animationInterval);
+                animationInterval = null;
+            }
+        });
+        
+        clearBtn.addEventListener('click', function() {
+            animCtx.clearRect(0, 0, animCanvas.width, animCanvas.height);
+        });
+        
+        startBtn.click();
+    </script>
+</body>
+</html>
