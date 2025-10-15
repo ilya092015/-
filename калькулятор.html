@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Калькулятор урона Dota 2</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 20px;
+        }
+        input {
+            padding: 8px;
+            font-size: 16px;
+            margin-bottom: 10px;
+            width: 100px;
+        }
+        #result {
+            padding: 10px;
+            background-color: #f0f0f0;
+            border-radius: 4px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h2>Калькулятор урона Dota 2</h2>
+    
+    <div>
+        <label for="damage">Базовый урон героя:</label>
+        <input type="number" id="damage" min="50" value="100" onchange="calculateDamage(this)"/>
+    </div>
+    
+    <div>
+        <label for="multiplier">Множитель способности:</label>
+        <input type="number" id="multiplier" min="1" value="2.5" step="0.1" onchange="calculateDamage(this)"/>
+    </div>
+    
+    <div><b>Итоговый урон:</b></div>
+    <div id="result">250</div>
+
+    <script>
+        function calculateDamage(input) {
+            var damage = parseInt(document.getElementById("damage").value);
+            var multiplier = parseFloat(document.getElementById("multiplier").value);
+            var result = damage * multiplier;
+            
+            document.getElementById("result").innerHTML = result.toFixed(1);
+        }
+    </script>
+</body>
+</html>
