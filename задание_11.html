@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Drag-and-Drop круга</title>
+    <style>
+        body { 
+            margin: 20px; 
+            font-family: Arial, sans-serif;
+        }
+        canvas { 
+            border: 2px solid #333; 
+            cursor: pointer;
+        }
+        .info {
+            margin: 10px 0;
+            padding: 10px;
+            background: #f0f0f0;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Drag-and-Drop круга</h1>
+    <div class="info">
+        <p>Перетаскивайте круг мышью</p>
+        <p>Нажмите клавиши 1 (синий), 2 (красный), 3 (зеленый) для смены цвета</p>
+    </div>
+    <canvas id="myCanvas" width="600" height="400"></canvas>
+
+    <script>
+        const canvas = document.getElementById('myCanvas');
+        const ctx = canvas.getContext('2d');
+        
+        let circle = {
+            x: 300,
+            y: 200,
+            radius: 50,
+            color: 'blue',
+            isDragging: false,
+            offsetX: 0,
+            offsetY: 0
+        };
+        
+        const colors = {
+            '1': 'blue',
+            '2': 'red', 
+            '3': 'green'
+        };
+        
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            ctx.beginPath();
+            ctx.arc(circle.x, circle.y, circle.radius, 0, 2 * Math.PI);
+            
+            if (circle.isDragging) {
+                ctx.fillStyle = 'gray';
+            } else {
+                ctx.fillStyle = circle.color;
+            }
+            
+            ctx.fill();
+            ctx.strokeStyle = '#333';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+            
+            ctx.beginPath();
+            ctx.arc(circle.x, circle.y, 3, 0, 2 * Math.PI);
+            ctx.fillStyle = 'white';
+            ctx.fill();
+        }
+        
+        function isPointInCircle(x, y) {
+            const distance = Math.sqrt((x - circle.x) ** 2 + (y - circle.y) ** 2);
+            return distance <= circle.radius;
+        }
+        
+        canvas.addEventListener('mousedown', (e) => {
+            const rect = canvas.getBoundingClientRect();
+            const mouseX = e.clientX - rect.left;
+            const mouseY = e.clientY - rect.top;
+            
+            if (isPointInCircle(mouseX, mouseY)) {
+                circle.isDragging = true;
+                circle.offsetX = mouseX - circle.x;
+                circle.offsetY = mouseY - circle.y;
+                canvas.style.cursor = 'grabbing';
+                draw(); 
+            }
+        });
+        
+        canvas.addEventListener('mousemove', (e) => {
+            if (circle.isDragging) {
+                const rect = canvas.getBoundingClientRect();
+                const mouseX = e.clientX - rect.left;
+                const mouseY = e.clientY - rect.top;
+                
+                let newX = mouseX - circle.offsetX;
+                let newY = mouseY - circle.offsetY;
+                
+                newX = Math.max(circle.radius, Math.min(canvas.width - circle.radius, newX));
+                newY = Math.max(circle.radius, Math.min(canvas.height - circle.radius, newY));
+                
+                circle.x = newX;
+                circle.y = newY;
+                
+                draw();
+            }
+        });
+        
+        canvas.addEventListener('mouseup', () => {
+            if (circle.isDragging) {
+                circle.isDragging = false;
+                canvas.style.cursor = 'pointer';
+                draw(); 
+            }
+        });
+        
+        canvas.addEventListener('mouseleave', () => {
+            if (circle.isDragging) {
+                circle.isDragging = false;
+                canvas.style.cursor = 'pointer';
+                draw();
+            }
+        });
+        
+
+        document.addEventListener('keydown', (e) => {
+            if (['1', '2', '3'].includes(e.key)) {
+                if (!circle.isDragging) {
+                    circle.color = colors[e.key];
+                    draw();
+                }
+            }
+        });
+        
+        draw();
+    </script>
+</body>
+</html>
