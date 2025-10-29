@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Рисование эллипса</title>
+    <style>
+        .controls { margin-bottom: 15px; }
+        label { display: inline-block; width: 120px; }
+        input { margin: 5px; }
+        canvas { border: 1px solid #ccc; }
+    </style>
+</head>
+<body>
+    <div class="controls">
+        <label>Радиус X:</label>
+        <input type="number" id="radiusX" value="100" min="1"><br>
+        <label>Радиус Y:</label>
+        <input type="number" id="radiusY" value="80" min="1"><br>
+        <label>Толщина:</label>
+        <input type="number" id="lineWidth" value="2" min="1"><br>
+        <label>Цвет контура:</label>
+        <input type="color" id="strokeColor" value="#ff0000"><br>
+        <label>Цвет заливки:</label>
+        <input type="color" id="fillColor" value="#ffff00"><br>
+        <label>Заливка:</label>
+        <input type="checkbox" id="fillCheck" checked>
+    </div>
+    <canvas id="myCanvas" width="400" height="300"></canvas>
+
+    <script>
+        const canvas = document.getElementById('myCanvas');
+        const ctx = canvas.getContext('2d');
+        
+        function drawEllipse() {
+            const radiusX = parseInt(document.getElementById('radiusX').value);
+            const radiusY = parseInt(document.getElementById('radiusY').value);
+            const lineWidth = parseInt(document.getElementById('lineWidth').value);
+            const strokeColor = document.getElementById('strokeColor').value;
+            const fillColor = document.getElementById('fillColor').value;
+            const hasFill = document.getElementById('fillCheck').checked;
+            
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            ctx.beginPath();
+            ctx.ellipse(
+                canvas.width/2, 
+                canvas.height/2, 
+                radiusX, 
+                radiusY, 
+                0, 0, 2 * Math.PI
+            );
+            
+            if (hasFill) {
+                ctx.fillStyle = fillColor;
+                ctx.fill();
+            }
+            
+            ctx.lineWidth = lineWidth;
+            ctx.strokeStyle = strokeColor;
+            ctx.stroke();
+        }
+        
+        document.querySelectorAll('input').forEach(input => {
+            input.addEventListener('change', drawEllipse);
+        });
+        
+        drawEllipse();
+    </script>
+</body>
+</html>
