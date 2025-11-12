@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Список стран по частям света</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        
+        .controls {
+            background-color: #f5f5f5;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        
+        .filter-section {
+            margin-bottom: 15px;
+        }
+        
+        .filter-section label {
+            display: inline-block;
+            margin-right: 15px;
+        }
+        
+        .country-list {
+            list-style-type: none;
+            padding: 0;
+        }
+        
+        .country-item {
+            padding: 10px;
+            margin-bottom: 5px;
+            border-radius: 3px;
+            transition: all 0.3s ease;
+        }
+        
+        .europe { background-color: #e6f7ff; border-left: 4px solid #1890ff; }
+        .asia { background-color: #f6ffed; border-left: 4px solid #52c41a; }
+        .africa { background-color: #fff7e6; border-left: 4px solid #fa8c16; }
+        .america { background-color: #f9f0ff; border-left: 4px solid #722ed1; }
+        
+        button {
+            padding: 8px 15px;
+            margin-right: 10px;
+            background-color: #1890ff;
+            color: white;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+        
+        button:hover {
+            background-color: #40a9ff;
+        }
+        
+        select {
+            padding: 5px;
+            border-radius: 3px;
+            border: 1px solid #d9d9d9;
+        }
+        
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <h1>Список стран по частям света</h1>
+    
+    <div class="controls">
+        <div class="filter-section">
+            <strong>Фильтр по частям света:</strong><br>
+            <label><input type="checkbox" name="region" value="europe" checked> Европа</label>
+            <label><input type="checkbox" name="region" value="asia" checked> Азия</label>
+            <label><input type="checkbox" name="region" value="africa" checked> Африка</label>
+            <label><input type="checkbox" name="region" value="america" checked> Америка</label>
+        </div>
+        
+        <div class="filter-section">
+            <strong>Способ отображения:</strong>
+            <button id="hide-show-btn">Hide/Show</button>
+            <button id="fade-btn">Fade</button>
+            <button id="slide-btn">Slide</button>
+        </div>
+        
+        <div class="filter-section">
+            <strong>Скорость анимации:</strong>
+            <select id="speed-select">
+                <option value="fast">Быстро</option>
+                <option value="slow">Медленно</option>
+                <option value="500">Средняя</option>
+                <option value="1000">Медленная</option>
+            </select>
+        </div>
+        
+        <div class="filter-section">
+            <strong>Тест:</strong>
+            <button id="test-btn">Протестировать анимацию</button>
+        </div>
+    </div>
+    
+    <ul class="country-list">
+        <li class="country-item europe">Россия</li>
+        <li class="country-item europe">Германия</li>
+        <li class="country-item europe">Франция</li>
+        <li class="country-item europe">Италия</li>
+        <li class="country-item europe">Испания</li>
+        
+        <li class="country-item asia">Китай</li>
+        <li class="country-item asia">Япония</li>
+        <li class="country-item asia">Индия</li>
+        <li class="country-item asia">Южная Корея</li>
+        <li class="country-item asia">Турция</li>
+        
+        <li class="country-item africa">Египет</li>
+        <li class="country-item africa">Нигерия</li>
+        <li class="country-item africa">ЮАР</li>
+        <li class="country-item africa">Кения</li>
+        <li class="country-item africa">Марокко</li>
+        
+        <li class="country-item america">США</li>
+        <li class="country-item america">Канада</li>
+        <li class="country-item america">Бразилия</li>
+        <li class="country-item america">Аргентина</li>
+        <li class="country-item america">Мексика</li>
+    </ul>
+
+    <script>
+        $(document).ready(function() {
+            console.log("jQuery загружен!"); 
+            
+            let animationType = 'hide-show';
+            let animationSpeed = 'fast';
+            
+            $('#hide-show-btn').click(function() {
+                animationType = 'hide-show';
+                alert('Выбран режим: Hide/Show');
+            });
+            
+            $('#fade-btn').click(function() {
+                animationType = 'fade';
+                alert('Выбран режим: Fade');
+            });
+            
+            $('#slide-btn').click(function() {
+                animationType = 'slide';
+                alert('Выбран режим: Slide');
+            });
+            
+            $('#speed-select').change(function() {
+                animationSpeed = $(this).val();
+                console.log('Скорость изменена на: ' + animationSpeed);
+            });
+            
+            $('input[name="region"]').change(function() {
+                console.log('Чекбокс изменен');
+                updateFilter();
+            });
+            
+            $('#test-btn').click(function() {
+                $('.europe').hide(1000).show(1000);
+            });
+            
+            function updateFilter() {
+                console.log('updateFilter вызван');
+                
+                $('input[name="region"]').each(function() {
+                    const region = $(this).val();
+                    const isChecked = $(this).is(':checked');
+                    
+                    console.log('Регион: ' + region + ', отмечен: ' + isChecked);
+                    
+                    if (isChecked) {
+                        showRegion(region);
+                    } else {
+                        hideRegion(region);
+                    }
+                });
+            }
+            
+            function showRegion(region) {
+                const elements = $('.' + region);
+                console.log('Показываем регион: ' + region + ', элементов: ' + elements.length);
+                
+                switch(animationType) {
+                    case 'hide-show':
+                        elements.show(animationSpeed);
+                        break;
+                    case 'fade':
+                        elements.fadeIn(animationSpeed);
+                        break;
+                    case 'slide':
+                        elements.slideDown(animationSpeed);
+                        break;
+                }
+            }
+            
+            function hideRegion(region) {
+                const elements = $('.' + region);
+                console.log('Скрываем регион: ' + region + ', элементов: ' + elements.length);
+                
+                switch(animationType) {
+                    case 'hide-show':
+                        elements.hide(animationSpeed);
+                        break;
+                    case 'fade':
+                        elements.fadeOut(animationSpeed);
+                        break;
+                    case 'slide':
+                        elements.slideUp(animationSpeed);
+                        break;
+                }
+            }
+            
+            $('.country-item').show();
+        });
+    </script>
+</body>
+</html>
