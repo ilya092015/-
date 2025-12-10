@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Callback-функции в jQuery</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        body { font-family: Arial; margin: 20px; }
+        .task { margin-bottom: 40px; padding: 20px; border: 1px solid #ccc; }
+        .box {
+            width: 200px; padding: 20px; margin: 10px 0;
+            background: #e3f2fd; border: 2px solid #2196f3;
+        }
+        .hidden { display: none; }
+        button { margin: 5px; padding: 10px 15px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <h1>Callback-функции в jQuery</h1>
+    <div class="task">
+        <h2>1. Сокрытие текста без CallBack</h2>
+        <p>Alert сработает ДО завершения анимации.</p>
+        <div id="box1" class="box">
+            Этот блок будет скрыт, но alert появится сразу.
+        </div>
+        <button id="hideWithoutCB">Скрыть блок (без callback)</button>
+    </div>
+
+    <div class="task">
+        <h2>2. Сокрытие текста c CallBack</h2>
+        <p>Alert сработает ПОСЛЕ завершения анимации.</p>
+        <div id="box2" class="box">
+            Этот блок будет скрыт, и alert появится после скрытия.
+        </div>
+        <button id="hideWithCB">Скрыть блок (с callback)</button>
+    </div>
+
+    <div class="task">
+        <h2>3. Сокрытие абзацев один за другим</h2>
+        <p>Абзацы скрываются по очереди с задержкой.</p>
+        <div id="paragraphs">
+            <p class="para">Абзац 1</p>
+            <p class="para">Абзац 2</p>
+            <p class="para">Абзац 3</p>
+            <p class="para">Абзац 4</p>
+        </div>
+        <button id="hideSequence">Скрыть последовательно</button>
+        <button id="showAll">Показать все</button>
+    </div>
+
+    <script>
+        $(document).ready(function() {
+            $("#hideWithoutCB").click(function() {
+                $("#box1").slideUp(1000);
+                alert("Блок начал скрываться, но alert уже тут!");
+            });
+
+            $("#hideWithCB").click(function() {
+                $("#box2").slideUp(1000, function() {
+                    alert("Блок полностью скрыт!");
+                });
+            });
+
+            $("#hideSequence").click(function() {
+                $(".para").each(function(index) {
+                    $(this).delay(500 * index).slideUp(500);
+                });
+            });
+
+            $("#showAll").click(function() {
+                $(".para").slideDown(300);
+            });
+        });
+    </script>
+</body>
+</html>
