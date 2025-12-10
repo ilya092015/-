@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>jQuery Анимация - 2 задания</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        body { font-family: Arial; margin: 20px; }
+        .tabs { display: flex; margin-bottom: 20px; }
+        .tab { padding: 10px 20px; cursor: pointer; background: #ddd; border: 1px solid #ccc; }
+        .tab.active { background: #fff; border-bottom: none; }
+        .content { display: none; padding: 20px; border: 1px solid #ccc; }
+        .content.active { display: block; }
+        .controls { margin: 15px 0; }
+        label { display: block; margin: 5px 0; }
+        input[type="range"], input[type="number"] { width: 200px; }
+        #box { width: 100px; height: 100px; background: steelblue; position: relative; margin-top: 20px; }
+        #textBox { font-size: 20px; margin: 20px 0; padding: 10px; border: 2px solid #333; display: inline-block; }
+    </style>
+</head>
+<body>
+    <h1>Два задания по анимации в jQuery</h1>
+
+    <div class="tabs">
+        <div class="tab active" data-tab="1">Задание 1: Анимация прямоугольника</div>
+        <div class="tab" data-tab="3">Задание 3: Анимация текста</div>
+    </div>
+
+    <div id="content1" class="content active">
+        <h2>Комбинированная анимация прямоугольника</h2>
+        <div class="controls">
+            <label>Ширина (px): <input type="range" id="width" min="50" max="300" value="100"></label>
+            <label>Высота (px): <input type="range" id="height" min="50" max="300" value="100"></label>
+            <label>Смещение X (px): <input type="range" id="posX" min="0" max="500" value="0"></label>
+            <label>Скорость (мс): <input type="number" id="speed1" value="500"></label>
+            <button id="animateBtn1">Запустить анимацию</button>
+        </div>
+        <div id="box"></div>
+    </div>
+
+    <div id="content3" class="content">
+        <h2>Анимация размера текста</h2>
+        <div class="controls">
+            <label>Текст: <input type="text" id="textInput" value="Hello jQuery!"></label>
+            <label>Размер шрифта (px): <input type="range" id="fontSize" min="10" max="100" value="20"></label>
+            <label>Скорость (мс): <input type="number" id="speed3" value="500"></label>
+            <button id="animateBtn3">Анимировать текст</button>
+        </div>
+        <div id="textBox">Hello jQuery!</div>
+    </div>
+
+    <script>
+        $(document).ready(function() {
+            $(".tab").click(function() {
+                $(".tab").removeClass("active");
+                $(".content").removeClass("active");
+                $(this).addClass("active");
+                $("#content" + $(this).data("tab")).addClass("active");
+            });
+
+            $("#animateBtn1").click(function() {
+                const width = $("#width").val() + "px";
+                const height = $("#height").val() + "px";
+                const posX = $("#posX").val() + "px";
+                const speed = parseInt($("#speed1").val());
+
+                $("#box").animate({
+                    width: width,
+                    height: height,
+                    left: posX
+                }, speed);
+            });
+
+            $("#textInput").on("input", function() {
+                $("#textBox").text($(this).val());
+            });
+
+            $("#animateBtn3").click(function() {
+                const fontSize = $("#fontSize").val() + "px";
+                const speed = parseInt($("#speed3").val());
+
+                $("#textBox").animate({
+                    fontSize: fontSize
+                }, speed);
+            });
+        });
+    </script>
+</body>
+</html>
