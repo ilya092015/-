@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Рисование многоугольника</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .container {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        .controls {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            width: 200px;
+        }
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        label {
+            font-weight: bold;
+        }
+        input[type="number"], input[type="color"] {
+            padding: 5px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        input[type="checkbox"] {
+            margin-right: 10px;
+        }
+        canvas {
+            border: 1px solid #ccc;
+            background-color: white;
+        }
+    </style>
+</head>
+<body>
+    <h1>Рисование многоугольника</h1>
+    
+    <div class="container">
+        <div class="controls">
+            <div class="control-group">
+                <label for="radius">Радиус описанной окружности:</label>
+                <input type="number" id="radius" min="10" max="200" value="100">
+            </div>
+            
+            <div class="control-group">
+                <label for="sides">Количество углов:</label>
+                <input type="number" id="sides" min="3" max="20" value="6">
+            </div>
+            
+            <div class="control-group">
+                <label for="lineWidth">Толщина контура:</label>
+                <input type="number" id="lineWidth" min="1" max="20" value="2">
+            </div>
+            
+            <div class="control-group">
+                <label for="strokeColor">Цвет контура:</label>
+                <input type="color" id="strokeColor" value="#ff0000">
+            </div>
+            
+            <div class="control-group">
+                <label for="fillColor">Цвет заливки:</label>
+                <input type="color" id="fillColor" value="#ffff00">
+            </div>
+            
+            <div class="control-group">
+                <label>
+                    <input type="checkbox" id="fillEnabled" checked>
+                    Заливка включена
+                </label>
+            </div>
+        </div>
+        
+        <canvas id="canvas" width="400" height="400"></canvas>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        
+        const radiusInput = document.getElementById('radius');
+        const sidesInput = document.getElementById('sides');
+        const lineWidthInput = document.getElementById('lineWidth');
+        const strokeColorInput = document.getElementById('strokeColor');
+        const fillColorInput = document.getElementById('fillColor');
+        const fillEnabledInput = document.getElementById('fillEnabled');
+        
+        function drawPolygon() {
+            const radius = parseInt(radiusInput.value);
+            const sides = parseInt(sidesInput.value);
+            const lineWidth = parseInt(lineWidthInput.value);
+            const strokeColor = strokeColorInput.value;
+            const fillColor = fillColorInput.value;
+            const fillEnabled = fillEnabledInput.checked;
+            
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+            
+            ctx.beginPath();
+            
+            for (let i = 0; i < sides; i++) {
+                const angle = (i * 2 * Math.PI / sides) - Math.PI / 2;
+                const x = centerX + radius * Math.cos(angle);
+                const y = centerY + radius * Math.sin(angle);
+                
+                if (i === 0) {
+                    ctx.moveTo(x, y);
+                } else {
+                    ctx.lineTo(x, y);
+                }
+            }
+            
+            ctx.closePath();
+            
+            if (fillEnabled) {
+                ctx.fillStyle = fillColor;
+                ctx.fill();
+            }
+            
+            ctx.lineWidth = lineWidth;
+            ctx.strokeStyle = strokeColor;
+            ctx.stroke();
+        }
+        
+        radiusInput.onchange = drawPolygon;
+        sidesInput.onchange = drawPolygon;
+        lineWidthInput.onchange = drawPolygon;
+        strokeColorInput.onchange = drawPolygon;
+        fillColorInput.onchange = drawPolygon;
+        fillEnabledInput.onchange = drawPolygon;
+        
+        drawPolygon();
+    </script>
+</body>
+</html>

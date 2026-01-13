@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Шторки-перемычки</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .container {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        .controls {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            width: 200px;
+        }
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        label {
+            font-weight: bold;
+        }
+        input[type="number"], input[type="color"] {
+            padding: 5px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        canvas {
+            border: 1px solid #ccc;
+            background-color: white;
+        }
+        .instructions {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #f0f0f0;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Шторки-перемычки</h1>
+    
+    <div class="container">
+        <div class="controls">
+            <div class="control-group">
+                <label for="leftColor">Цвет левой части:</label>
+                <input type="color" id="leftColor" value="#ff9999">
+            </div>
+            
+            <div class="control-group">
+                <label for="rightColor">Цвет правой части:</label>
+                <input type="color" id="rightColor" value="#9999ff">
+            </div>
+            
+            <div class="control-group">
+                <label for="dividerPosition">Позиция перемычки (0-100):</label>
+                <input type="number" id="dividerPosition" min="0" max="100" value="50">
+            </div>
+        </div>
+        
+        <canvas id="canvas" width="400" height="200"></canvas>
+    </div>
+    
+    <div class="instructions">
+        <p>Используйте клавиши ← и → для перемещения перемычки</p>
+        <p>Или измените значение в поле ввода</p>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        
+        const leftColorInput = document.getElementById('leftColor');
+        const rightColorInput = document.getElementById('rightColor');
+        const dividerPositionInput = document.getElementById('dividerPosition');
+        
+        function draw() {
+            const leftColor = leftColorInput.value;
+            const rightColor = rightColorInput.value;
+            const dividerPosition = parseInt(dividerPositionInput.value);
+            
+            const dividerX = (canvas.width * dividerPosition) / 100;
+            
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            ctx.fillStyle = leftColor;
+            ctx.fillRect(0, 0, dividerX, canvas.height);
+            
+            ctx.fillStyle = rightColor;
+            ctx.fillRect(dividerX, 0, canvas.width - dividerX, canvas.height);
+            
+            ctx.fillStyle = '#000000';
+            const dividerWidth = 10;
+            ctx.fillRect(dividerX - dividerWidth/2, 0, dividerWidth, canvas.height);
+            
+            ctx.fillStyle = 'white';
+            ctx.font = '16px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText(`${dividerPosition}%`, dividerX, canvas.height - 20);
+        }
+        
+        leftColorInput.onchange = draw;
+        rightColorInput.onchange = draw;
+        dividerPositionInput.onchange = draw;
+        
+        document.addEventListener('keydown', (event) => {
+            let position = parseInt(dividerPositionInput.value);
+            
+            if (event.key === 'ArrowLeft' && position > 0) {
+                position--;
+                dividerPositionInput.value = position;
+                draw();
+            } else if (event.key === 'ArrowRight' && position < 100) {
+                position++;
+                dividerPositionInput.value = position;
+                draw();
+            }
+        });
+        
+        draw();
+    </script>
+</body>
+</html>
